@@ -1,0 +1,15 @@
+[submodule "lib/forge-std"]
+	path = lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "web3webdeploy"]
+	path = web3webdeploy
+	url = https://github.com/Plopmenz/web3webdeploy
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "lib/ens-contracts"]
+	path = lib/ens-contracts
+	url = https://github.com/ensdomains/ens-contracts
+[submodule "lib/open-token"]
+	path = lib/open-token
+	url = https://github.com/plopmenz/open-token
