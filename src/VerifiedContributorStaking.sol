@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {IReverseRegistrar} from "@ensdomains/ens-contracts/reverseRegistrar/IReverseRegistrar.sol";
+import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IReverseRegistrar} from "../lib/ens-contracts/contracts/reverseRegistrar/IReverseRegistrar.sol";
 
 import {IVerifiedContributorStaking, IERC20MintBurnable} from "./IVerifiedContributorStaking.sol";
 

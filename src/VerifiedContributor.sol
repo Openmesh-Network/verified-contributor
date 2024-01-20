@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ERC721Enumerable, ERC721} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {IReverseRegistrar} from "@ensdomains/ens-contracts/reverseRegistrar/IReverseRegistrar.sol";
+import {
+    ERC721Enumerable,
+    ERC721
+} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
+import {IReverseRegistrar} from "../lib/ens-contracts/contracts/reverseRegistrar/IReverseRegistrar.sol";
 
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 
 contract VerifiedContributor is ERC721Enumerable, AccessControl {
     bytes32 public constant MINT_ROLE = keccak256("MINT");
