@@ -32,24 +32,33 @@ export async function deploy(
   deployer: Deployer,
   settings?: VerifiedContributorDeploymentSettings
 ): Promise<VerifiedContributorDeployment> {
-  const openTokenDeployment =
-    settings?.openTokenDeployment ?? (await openTokenDeploy(deployer));
-
   // Cache to only invoke the deployment once (but not invoked if no one uses it)
   let _defaultSettings:
     | { admin: Address; ensReverseRegistrar: Address }
     | undefined;
   const defaultSettings = async () => {
     if (!_defaultSettings) {
+      deployer.startContext("lib/openmesh-admin");
+      const admin = (await openmeshAdminDeploy(deployer)).admin;
+      deployer.finishContext();
+      deployer.startContext("lib/ens-reverse-registrar");
+      const ensReverseRegistrar = (await ensReverseRegistrarDeploy(deployer))
+        .reverseRegistrar;
+      deployer.finishContext();
       _defaultSettings = {
-        admin: (await openmeshAdminDeploy(deployer)).admin,
-        ensReverseRegistrar: (await ensReverseRegistrarDeploy(deployer))
-          .reverseRegistrar,
+        admin: admin,
+        ensReverseRegistrar: ensReverseRegistrar,
       };
     }
 
     return _defaultSettings;
   };
+
+  deployer.startContext("lib/open-token");
+  const openTokenDeployment =
+    settings?.openTokenDeployment ??
+    (await openTokenDeploy(deployer, await defaultSettings()));
+  deployer.finishContext();
 
   const verifiedContributor = await deployVerifiedContributor(
     deployer,
