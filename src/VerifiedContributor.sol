@@ -6,11 +6,12 @@ import {
     ERC721
 } from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
-import {IReverseRegistrar} from "../lib/ens-contracts/contracts/reverseRegistrar/IReverseRegistrar.sol";
+import {ClaimReverseENS} from "../lib/ens-reverse-registrar/src/ClaimReverseENS.sol";
 
 import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {IVerifiedContributor} from "./IVerifiedContributor.sol";
 
-contract VerifiedContributor is ERC721Enumerable, AccessControl {
+contract VerifiedContributor is ERC721Enumerable, AccessControl, ClaimReverseENS, IVerifiedContributor {
     bytes32 public constant MINT_ROLE = keccak256("MINT");
     bytes32 public constant BURN_ROLE = keccak256("BURN");
     string public metadataUri;
@@ -22,13 +23,13 @@ contract VerifiedContributor is ERC721Enumerable, AccessControl {
         string memory symbol_,
         string memory _metadataUri,
         address _admin,
-        IReverseRegistrar _reverseRegistrar
-    ) ERC721(name_, symbol_) {
+        address _reverseRegistrar
+    ) ERC721(name_, symbol_) ClaimReverseENS(_reverseRegistrar, _admin) {
         metadataUri = _metadataUri;
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
-        _reverseRegistrar.claim(_admin);
     }
 
+    /// @inheritdoc ERC721Enumerable
     function supportsInterface(bytes4 _interfaceId)
         public
         view
@@ -39,19 +40,17 @@ contract VerifiedContributor is ERC721Enumerable, AccessControl {
         return ERC721Enumerable.supportsInterface(_interfaceId) || AccessControl.supportsInterface(_interfaceId);
     }
 
-    /// @notice Mints a token to an address.
-    /// @param to The address receiving the token.
-    /// @param tokenId The id of the token to be minted.
-    function mint(address to, uint256 tokenId) external virtual onlyRole(MINT_ROLE) {
+    /// @inheritdoc IVerifiedContributor
+    function mint(address to, uint256 tokenId) external onlyRole(MINT_ROLE) {
         _mint(to, tokenId);
     }
 
-    /// @notice Burns a token.
-    /// @param tokenId The id of the token to be burned.
-    function burn(uint256 tokenId) external virtual onlyRole(BURN_ROLE) {
+    /// @inheritdoc IVerifiedContributor
+    function burn(uint256 tokenId) external onlyRole(BURN_ROLE) {
         _burn(tokenId);
     }
 
+    /// @inheritdoc IERC721
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
         if (from != address(0)) {
             // Not a mint, token is non-transferable
@@ -66,6 +65,7 @@ contract VerifiedContributor is ERC721Enumerable, AccessControl {
         return metadataUri;
     }
 
+    /// @inheritdoc IVerifiedContributor
     function updateMetadata(string calldata _metadataUri) external onlyRole(DEFAULT_ADMIN_ROLE) {
         metadataUri = _metadataUri;
     }

@@ -17,20 +17,20 @@ interface IVerifiedContributorStaking {
     event TokensClaimed(uint256 indexed tokenId, uint256 tokens);
     event NFTUnstaked(uint256 indexed tokenId);
 
-    /// Stakes your NFT.
+    /// @notice Stakes your NFT.
     /// @param _tokenId The id of the NFT to stake.
     function stake(uint256 _tokenId) external;
 
-    /// Unstakes your NFT.
+    /// @notice Unstakes your NFT.
     /// @param _tokenId The id of the NFT to unstake.
     function unstake(uint256 _tokenId) external;
 
-    /// Checks how much tokens are claimable.
+    /// @notice Checks how much tokens are claimable.
     /// @param _tokenId The id of the NFT to check claimable tokens.
     function claimable(uint256 _tokenId) external view returns (uint256 claimableTokens);
 
-    /// Claims all claimable tokens.
+    /// @notice Claims all claimable tokens.
     /// @param _tokenId The id of the NFT to claim tokens for.
-    /// @notice Can be called by any wallet, but tokens will be claimed to NFT owner.
+    /// @dev Can be called by any wallet, but tokens will be claimed to NFT owner.
     function claim(uint256 _tokenId) external;
 }

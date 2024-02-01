@@ -1,14 +1,18 @@
 import { Address, Deployer } from "../web3webdeploy/types";
-import { OpenTokenDeployment } from "../lib/open-token/deploy/deploy";
+import {
+  OpenTokenDeployment,
+  deploy as openTokenDeploy,
+} from "../lib/open-token/deploy/deploy";
 import {
   deployVerifiedContributor,
   VerifiedContributorDeploymentSettings as VerifiedContributorDeploymentSettingsInternal,
 } from "./VerifiedContributor";
-import { zeroAddress } from "viem";
 import {
   deployVerifiedContributorStaking,
   VerifiedContributorStakingDeploymentSettings,
 } from "./VerifiedContributorStaking";
+import { deploy as openmeshAdminDeploy } from "../lib/openmesh-admin/deploy/deploy";
+import { deploy as ensReverseRegistrarDeploy } from "../lib/ens-reverse-registrar/deploy/deploy";
 
 export interface VerifiedContributorDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
@@ -28,22 +32,36 @@ export async function deploy(
   deployer: Deployer,
   settings?: VerifiedContributorDeploymentSettings
 ): Promise<VerifiedContributorDeployment> {
+  const openTokenDeployment =
+    settings?.openTokenDeployment ?? (await openTokenDeploy(deployer));
+
+  // Cache to only invoke the deployment once (but not invoked if no one uses it)
+  let _defaultSettings:
+    | { admin: Address; ensReverseRegistrar: Address }
+    | undefined;
+  const defaultSettings = async () => {
+    if (!_defaultSettings) {
+      _defaultSettings = {
+        admin: (await openmeshAdminDeploy(deployer)).admin,
+        ensReverseRegistrar: (await ensReverseRegistrarDeploy(deployer))
+          .reverseRegistrar,
+      };
+    }
+
+    return _defaultSettings;
+  };
+
   const verifiedContributor = await deployVerifiedContributor(
     deployer,
-    settings?.verifiedContributorDeploymentSettings ?? {
-      admin: zeroAddress,
-      ensReverseRegistrar: zeroAddress,
-    }
+    settings?.verifiedContributorDeploymentSettings ?? (await defaultSettings())
   );
 
   const verifiedContributorStaking = await deployVerifiedContributorStaking(
     deployer,
     {
-      ...(settings?.verifiedContributorStakingDeploymentSettings ?? {
-        admin: zeroAddress,
-        ensReverseRegistrar: zeroAddress,
-      }),
-      openToken: settings?.openTokenDeployment.openToken ?? zeroAddress,
+      ...(settings?.verifiedContributorStakingDeploymentSettings ??
+        (await defaultSettings())),
+      openToken: openTokenDeployment.openToken,
       verifiedContributor: verifiedContributor,
     }
   );
