@@ -17,6 +17,7 @@ export async function deployVerifiedContributorStaking(
   const tokensPerSecond = settings.tokensPerSecond;
 
   return await deployer.deploy({
+    id: "VerifiedContributorStaking",
     contract: "VerifiedContributorStaking",
     args: [openToken, verifiedContributor, tokensPerSecond],
     ...settings,

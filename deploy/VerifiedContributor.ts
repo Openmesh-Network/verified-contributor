@@ -9,6 +9,7 @@ export async function deployVerifiedContributor(
   settings: VerifiedContributorDeploymentSettings
 ) {
   return await deployer.deploy({
+    id: "VerifiedContributor",
     contract: "VerifiedContributor",
     ...settings,
   });
