@@ -6,8 +6,7 @@ export interface VerifiedContributorDeploymentSettings
   tokenName?: string;
   tokenTicker?: string;
   tokenUri?: string;
-  admin: Address;
-  ensReverseRegistrar: Address;
+  admin?: Address;
 }
 
 export async function deployVerifiedContributor(
@@ -18,12 +17,11 @@ export async function deployVerifiedContributor(
   const tokenTicker = settings.tokenTicker ?? "OVC";
   const tokenUri =
     settings.tokenUri ?? "https://erc721.openmesh.network/metadata/ovc.json";
-  const admin = settings.admin;
-  const ensReverseRegistrar = settings.ensReverseRegistrar;
+  const admin = settings.admin ?? "0x2309762aAcA0a8F689463a42c0A6A84BE3A7ea51";
 
   return await deployer.deploy({
     contract: "VerifiedContributor",
-    args: [tokenName, tokenTicker, tokenUri, admin, ensReverseRegistrar],
+    args: [tokenName, tokenTicker, tokenUri, admin],
     ...settings,
   });
 }

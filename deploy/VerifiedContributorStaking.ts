@@ -7,8 +7,7 @@ export interface VerifiedContributorStakingDeploymentSettings
   openToken: Address;
   verifiedContributor: Address;
   tokensPerSecond?: bigint;
-  admin: Address;
-  ensReverseRegistrar: Address;
+  admin?: Address;
 }
 
 export async function deployVerifiedContributorStaking(
@@ -17,19 +16,12 @@ export async function deployVerifiedContributorStaking(
 ) {
   const openToken = settings.openToken;
   const verifiedContributor = settings.verifiedContributor;
-  const tokensPerSecond = Gwei(3858024); // ~10_000 OPEN every 30 days (9999.998208)
-  const admin = settings.admin;
-  const ensReverseRegistrar = settings.ensReverseRegistrar;
+  const tokensPerSecond = settings.tokensPerSecond ?? Gwei(3858024); // ~10_000 OPEN every 30 days (9999.998208)
+  const admin = settings.admin ?? "0x2309762aAcA0a8F689463a42c0A6A84BE3A7ea51";
 
   return await deployer.deploy({
     contract: "VerifiedContributorStaking",
-    args: [
-      openToken,
-      verifiedContributor,
-      tokensPerSecond,
-      admin,
-      ensReverseRegistrar,
-    ],
+    args: [openToken, verifiedContributor, tokensPerSecond, admin],
     ...settings,
   });
 }

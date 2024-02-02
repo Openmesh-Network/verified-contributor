@@ -5,39 +5,66 @@ import {
     ERC721Enumerable,
     ERC721
 } from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import {ERC721Votes} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Votes.sol";
+import {EIP712} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
 import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
-import {ClaimReverseENS} from "../lib/ens-reverse-registrar/src/ClaimReverseENS.sol";
+import {ENSReverseClaimable} from "../lib/ens-reverse-claimable/src/ENSReverseClaimable.sol";
 
-import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
+import {
+    IERC721Metadata,
+    IERC721
+} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import {IVerifiedContributor} from "./IVerifiedContributor.sol";
 
-contract VerifiedContributor is ERC721Enumerable, AccessControl, ClaimReverseENS, IVerifiedContributor {
+contract VerifiedContributor is
+    ERC721,
+    ERC721Enumerable,
+    EIP712,
+    ERC721Votes,
+    AccessControl,
+    ENSReverseClaimable,
+    IVerifiedContributor
+{
     bytes32 public constant MINT_ROLE = keccak256("MINT");
     bytes32 public constant BURN_ROLE = keccak256("BURN");
     string public metadataUri;
 
     error NotTransferable();
 
-    constructor(
-        string memory name_,
-        string memory symbol_,
-        string memory _metadataUri,
-        address _admin,
-        address _reverseRegistrar
-    ) ERC721(name_, symbol_) ClaimReverseENS(_reverseRegistrar, _admin) {
+    constructor(string memory _name, string memory _symbol, string memory _metadataUri, address _admin)
+        ERC721(_name, _symbol)
+        EIP712(_name, "1")
+    {
         metadataUri = _metadataUri;
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
     }
 
-    /// @inheritdoc ERC721Enumerable
+    /// @inheritdoc ERC721
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        override(ERC721, ERC721Enumerable, ERC721Votes)
+        returns (address)
+    {
+        return super._update(to, tokenId, auth);
+    }
+
+    /// @inheritdoc ERC721
+    function _increaseBalance(address account, uint128 value)
+        internal
+        override(ERC721, ERC721Enumerable, ERC721Votes)
+    {
+        super._increaseBalance(account, value);
+    }
+
+    /// @inheritdoc ERC721
     function supportsInterface(bytes4 _interfaceId)
         public
         view
         virtual
-        override(ERC721Enumerable, AccessControl)
+        override(ERC721, ERC721Enumerable, AccessControl)
         returns (bool)
     {
-        return ERC721Enumerable.supportsInterface(_interfaceId) || AccessControl.supportsInterface(_interfaceId);
+        return super.supportsInterface(_interfaceId);
     }
 
     /// @inheritdoc IVerifiedContributor
@@ -60,6 +87,7 @@ contract VerifiedContributor is ERC721Enumerable, AccessControl, ClaimReverseENS
         super.transferFrom(from, to, tokenId);
     }
 
+    /// @inheritdoc IERC721Metadata
     function tokenURI(uint256) public view override returns (string memory) {
         // Single image
         return metadataUri;
