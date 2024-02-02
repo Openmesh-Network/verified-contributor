@@ -8,7 +8,7 @@ import {
 import {ERC721Votes} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import {EIP712} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
 import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
-import {ENSReverseClaimable} from "../lib/ens-reverse-claimable/src/ENSReverseClaimable.sol";
+import {OpenmeshENSReverseClaimable} from "../lib/openmesh-admin/src/OpenmeshENSReverseClaimable.sol";
 
 import {
     IERC721Metadata,
@@ -22,21 +22,17 @@ contract VerifiedContributor is
     EIP712,
     ERC721Votes,
     AccessControl,
-    ENSReverseClaimable,
+    OpenmeshENSReverseClaimable,
     IVerifiedContributor
 {
     bytes32 public constant MINT_ROLE = keccak256("MINT");
     bytes32 public constant BURN_ROLE = keccak256("BURN");
-    string public metadataUri;
+    string public metadataUri = "https://erc721.openmesh.network/metadata/ovc.json";
 
     error NotTransferable();
 
-    constructor(string memory _name, string memory _symbol, string memory _metadataUri, address _admin)
-        ERC721(_name, _symbol)
-        EIP712(_name, "1")
-    {
-        metadataUri = _metadataUri;
-        _grantRole(DEFAULT_ADMIN_ROLE, _admin);
+    constructor() ERC721("Openmesh Verified Contributor", "OVC") EIP712("Openmesh Verified Contributor", "1") {
+        _grantRole(DEFAULT_ADMIN_ROLE, OPENMESH_ADMIN);
     }
 
     /// @inheritdoc ERC721

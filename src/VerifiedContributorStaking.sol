@@ -3,19 +3,18 @@ pragma solidity ^0.8.0;
 
 import {IERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
 import {Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import {Openmesh} from "../lib/openmesh-admin/src/Openmesh.sol";
 
 import {IVerifiedContributorStaking, IERC20MintBurnable} from "./IVerifiedContributorStaking.sol";
 
-contract VerifiedContributorStaking is Ownable, IVerifiedContributorStaking {
+contract VerifiedContributorStaking is Ownable, Openmesh, IVerifiedContributorStaking {
     uint256 public immutable tokensPerSecond;
     IERC20MintBurnable public immutable rewardToken;
     IERC721 public immutable stakeNFT;
     uint64 internal stakingOver = type(uint64).max;
     mapping(uint256 => uint64) private lastClaim;
 
-    constructor(IERC20MintBurnable _rewardToken, IERC721 _stakeNFT, uint256 _tokensPerSecond, address _admin)
-        Ownable(_admin)
-    {
+    constructor(IERC20MintBurnable _rewardToken, IERC721 _stakeNFT, uint256 _tokensPerSecond) Ownable(OPENMESH_ADMIN) {
         rewardToken = _rewardToken;
         stakeNFT = _stakeNFT;
         tokensPerSecond = _tokensPerSecond;

@@ -11,6 +11,7 @@ import {
   deployVerifiedContributorStaking,
   VerifiedContributorStakingDeploymentSettings,
 } from "./VerifiedContributorStaking";
+import { Gwei } from "../web3webdeploy/lib/etherUnits";
 
 export interface VerifiedContributorDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
@@ -43,7 +44,9 @@ export async function deploy(
   const verifiedContributorStaking = await deployVerifiedContributorStaking(
     deployer,
     {
-      ...(settings?.verifiedContributorStakingDeploymentSettings ?? {}),
+      ...(settings?.verifiedContributorStakingDeploymentSettings ?? {
+        tokensPerSecond: Gwei(3858024), // ~10_000 OPEN every 30 days (9999.998208)
+      }),
       openToken: openTokenDeployment.openToken,
       verifiedContributor: verifiedContributor,
     }
