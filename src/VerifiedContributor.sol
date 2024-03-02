@@ -75,12 +75,7 @@ contract VerifiedContributor is
 
     /// @inheritdoc IERC721
     function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
-        if (from != address(0)) {
-            // Not a mint, token is non-transferable
-            revert NotTransferable();
-        }
-
-        super.transferFrom(from, to, tokenId);
+        revert NotTransferable();
     }
 
     /// @inheritdoc ERC721
