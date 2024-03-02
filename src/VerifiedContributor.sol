@@ -27,7 +27,7 @@ contract VerifiedContributor is
 {
     bytes32 public constant MINT_ROLE = keccak256("MINT");
     bytes32 public constant BURN_ROLE = keccak256("BURN");
-    string public metadataUri = "https://erc721.openmesh.network/metadata/ovc.json";
+    string private metadataUri = "https://erc721.openmesh.network/metadata/ovc/";
 
     error NotTransferable();
 
@@ -83,9 +83,8 @@ contract VerifiedContributor is
         super.transferFrom(from, to, tokenId);
     }
 
-    /// @inheritdoc IERC721Metadata
-    function tokenURI(uint256) public view override returns (string memory) {
-        // Single image
+    /// @inheritdoc ERC721
+    function _baseURI() internal view override returns (string memory) {
         return metadataUri;
     }
 
