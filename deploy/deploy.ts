@@ -57,4 +57,9 @@ export async function deploy(
     verifiedContributor: verifiedContributor,
     verifiedContributorStaking: verifiedContributorStaking,
   };
+  await deployer.saveDeployment({
+    deploymentName: "latest.json",
+    deployment: deployment,
+  });
+  return deployment;
 }
