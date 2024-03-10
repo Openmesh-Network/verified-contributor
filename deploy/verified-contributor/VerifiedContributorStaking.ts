@@ -1,5 +1,4 @@
-import { Deployer } from "../../web3webdeploy/types";
-import { Address, DeployInfo } from "../web3webdeploy/types";
+import { Deployer, Address, DeployInfo } from "../../web3webdeploy/types";
 
 export interface VerifiedContributorStakingDeploymentSettings
   extends Omit<DeployInfo, "contract" | "args"> {

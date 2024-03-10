@@ -6,11 +6,11 @@ import {
 import {
   deployVerifiedContributor,
   VerifiedContributorDeploymentSettings as VerifiedContributorDeploymentSettingsInternal,
-} from "./VerifiedContributor";
+} from "./verified-contributor/VerifiedContributor";
 import {
   deployVerifiedContributorStaking,
   VerifiedContributorStakingDeploymentSettings,
-} from "./VerifiedContributorStaking";
+} from "./verified-contributor/VerifiedContributorStaking";
 import { Gwei } from "../web3webdeploy/lib/etherUnits";
 
 export interface VerifiedContributorDeploymentSettings {
@@ -32,6 +32,10 @@ export async function deploy(
   deployer: Deployer,
   settings?: VerifiedContributorDeploymentSettings
 ): Promise<VerifiedContributorDeployment> {
+  if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
+    return await deployer.loadDeployment({ deploymentName: "latest.json" });
+  }
+
   deployer.startContext("lib/open-token");
   const openTokenDeployment =
     settings?.openTokenDeployment ?? (await openTokenDeploy(deployer));
@@ -45,15 +49,15 @@ export async function deploy(
   const verifiedContributorStaking = await deployVerifiedContributorStaking(
     deployer,
     {
+      openToken: openTokenDeployment.openToken,
+      verifiedContributor: verifiedContributor,
       ...(settings?.verifiedContributorStakingDeploymentSettings ?? {
         tokensPerSecond: Gwei(3858024), // ~10_000 OPEN every 30 days (9999.998208)
       }),
-      openToken: openTokenDeployment.openToken,
-      verifiedContributor: verifiedContributor,
     }
   );
 
-  return {
+  const deployment = {
     verifiedContributor: verifiedContributor,
     verifiedContributorStaking: verifiedContributorStaking,
   };
