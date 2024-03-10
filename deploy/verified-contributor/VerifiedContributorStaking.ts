@@ -1,6 +1,6 @@
 import { Deployer, Address, DeployInfo } from "../../web3webdeploy/types";
 
-export interface VerifiedContributorStakingDeploymentSettings
+export interface DeployVerifiedContributorStakingSettings
   extends Omit<DeployInfo, "contract" | "args"> {
   openToken: Address;
   verifiedContributor: Address;
@@ -9,7 +9,7 @@ export interface VerifiedContributorStakingDeploymentSettings
 
 export async function deployVerifiedContributorStaking(
   deployer: Deployer,
-  settings: VerifiedContributorStakingDeploymentSettings
+  settings: DeployVerifiedContributorStakingSettings
 ) {
   const openToken = settings.openToken;
   const verifiedContributor = settings.verifiedContributor;

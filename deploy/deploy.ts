@@ -4,20 +4,20 @@ import {
   deploy as openTokenDeploy,
 } from "../lib/open-token/deploy/deploy";
 import {
+  DeployVerifiedContributorSettings,
   deployVerifiedContributor,
-  VerifiedContributorDeploymentSettings as VerifiedContributorDeploymentSettingsInternal,
 } from "./verified-contributor/VerifiedContributor";
 import {
+  DeployVerifiedContributorStakingSettings,
   deployVerifiedContributorStaking,
-  VerifiedContributorStakingDeploymentSettings,
 } from "./verified-contributor/VerifiedContributorStaking";
 import { Gwei } from "../web3webdeploy/lib/etherUnits";
 
 export interface VerifiedContributorDeploymentSettings {
   openTokenDeployment: OpenTokenDeployment;
-  verifiedContributorDeploymentSettings: VerifiedContributorDeploymentSettingsInternal;
-  verifiedContributorStakingDeploymentSettings: Omit<
-    VerifiedContributorStakingDeploymentSettings,
+  verifiedContributorSettings: DeployVerifiedContributorSettings;
+  verifiedContributorStakingSettings: Omit<
+    DeployVerifiedContributorStakingSettings,
     "openToken" | "verifiedContributor"
   >;
   forceRedeploy?: boolean;
@@ -43,7 +43,7 @@ export async function deploy(
 
   const verifiedContributor = await deployVerifiedContributor(
     deployer,
-    settings?.verifiedContributorDeploymentSettings ?? {}
+    settings?.verifiedContributorSettings ?? {}
   );
 
   const verifiedContributorStaking = await deployVerifiedContributorStaking(
@@ -51,7 +51,7 @@ export async function deploy(
     {
       openToken: openTokenDeployment.openToken,
       verifiedContributor: verifiedContributor,
-      ...(settings?.verifiedContributorStakingDeploymentSettings ?? {
+      ...(settings?.verifiedContributorStakingSettings ?? {
         tokensPerSecond: Gwei(3858024), // ~10_000 OPEN every 30 days (9999.998208)
       }),
     }

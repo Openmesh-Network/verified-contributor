@@ -1,11 +1,11 @@
 import { Deployer, DeployInfo } from "../../web3webdeploy/types";
 
-export interface VerifiedContributorDeploymentSettings
+export interface DeployVerifiedContributorSettings
   extends Omit<DeployInfo, "contract" | "args"> {}
 
 export async function deployVerifiedContributor(
   deployer: Deployer,
-  settings: VerifiedContributorDeploymentSettings
+  settings: DeployVerifiedContributorSettings
 ) {
   return await deployer
     .deploy({
