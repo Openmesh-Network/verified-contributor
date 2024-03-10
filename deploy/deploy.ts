@@ -20,6 +20,7 @@ export interface VerifiedContributorDeploymentSettings {
     VerifiedContributorStakingDeploymentSettings,
     "openToken" | "verifiedContributor"
   >;
+  forceRedeploy?: boolean;
 }
 
 export interface VerifiedContributorDeployment {
