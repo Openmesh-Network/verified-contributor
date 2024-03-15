@@ -2,7 +2,7 @@ import { Address, Deployer } from "../web3webdeploy/types";
 import {
   DeployVerifiedContributorSettings,
   deployVerifiedContributor,
-} from "./verified-contributor/VerifiedContributor";
+} from "./internal/VerifiedContributor";
 
 export interface VerifiedContributorDeploymentSettings {
   verifiedContributorSettings: DeployVerifiedContributorSettings;
