@@ -14,6 +14,9 @@ import {
     IERC721Metadata,
     IERC721
 } from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+import {IVotes} from "../lib/openzeppelin-contracts/contracts/governance/utils/IVotes.sol";
+import {IERC5267} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC5267.sol";
+import {IERC6372} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC6372.sol";
 import {IVerifiedContributor} from "./IVerifiedContributor.sol";
 
 contract VerifiedContributor is
@@ -60,7 +63,9 @@ contract VerifiedContributor is
         override(ERC721, ERC721Enumerable, AccessControl)
         returns (bool)
     {
-        return super.supportsInterface(_interfaceId);
+        return _interfaceId == type(IVotes).interfaceId || _interfaceId == type(IERC5267).interfaceId
+            || _interfaceId == type(IERC6372).interfaceId || ERC721Enumerable.supportsInterface(_interfaceId)
+            || AccessControl.supportsInterface(_interfaceId);
     }
 
     /// @inheritdoc IVerifiedContributor
