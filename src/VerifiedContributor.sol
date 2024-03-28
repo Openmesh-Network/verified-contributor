@@ -30,6 +30,7 @@ contract VerifiedContributor is
 {
     bytes32 public constant MINT_ROLE = keccak256("MINT");
     bytes32 public constant BURN_ROLE = keccak256("BURN");
+    bytes32 public constant METADATA_ROLE = keccak256("METADATA");
     string private metadataUri = "https://erc721.openmesh.network/metadata/ovc/";
 
     error NotTransferable();
@@ -64,8 +65,7 @@ contract VerifiedContributor is
         returns (bool)
     {
         return _interfaceId == type(IVotes).interfaceId || _interfaceId == type(IERC5267).interfaceId
-            || _interfaceId == type(IERC6372).interfaceId || ERC721Enumerable.supportsInterface(_interfaceId)
-            || AccessControl.supportsInterface(_interfaceId);
+            || _interfaceId == type(IERC6372).interfaceId || super.supportsInterface(_interfaceId);
     }
 
     /// @inheritdoc IVerifiedContributor
@@ -74,12 +74,17 @@ contract VerifiedContributor is
     }
 
     /// @inheritdoc IVerifiedContributor
-    function burn(uint256 tokenId) external onlyRole(BURN_ROLE) {
+    function burn(uint256 tokenId) external {
+        if (msg.sender != _ownerOf((tokenId))) {
+            // If not owned by you, need BURN role.
+            _checkRole(BURN_ROLE);
+        }
+
         _burn(tokenId);
     }
 
     /// @inheritdoc IERC721
-    function transferFrom(address from, address to, uint256 tokenId) public override(ERC721, IERC721) {
+    function transferFrom(address, address, uint256) public pure override(ERC721, IERC721) {
         revert NotTransferable();
     }
 
@@ -89,7 +94,7 @@ contract VerifiedContributor is
     }
 
     /// @inheritdoc IVerifiedContributor
-    function updateMetadata(string calldata _metadataUri) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function updateMetadata(string calldata _metadataUri) external onlyRole(METADATA_ROLE) {
         metadataUri = _metadataUri;
     }
 }
