@@ -18,7 +18,12 @@ export async function deploy(
   settings?: VerifiedContributorDeploymentSettings
 ): Promise<VerifiedContributorDeployment> {
   if (settings?.forceRedeploy !== undefined && !settings.forceRedeploy) {
-    return await deployer.loadDeployment({ deploymentName: "latest.json" });
+    const existingDeployment = await deployer.loadDeployment({
+      deploymentName: "latest.json",
+    });
+    if (existingDeployment !== undefined) {
+      return existingDeployment;
+    }
   }
 
   const verifiedContributor = await deployVerifiedContributor(

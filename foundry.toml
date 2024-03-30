@@ -8,5 +8,6 @@ number_underscore="thousands"
 optimizer = true
 optimizer_runs = 200
 solc = "0.8.23"
+evm_version = "shanghai"
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
