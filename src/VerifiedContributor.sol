@@ -1,11 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {
-    ERC721Enumerable,
-    ERC721
-} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import {ERC721Votes} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Votes.sol";
+import {ERC721Votes, ERC721} from "../lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Votes.sol";
 import {EIP712} from "../lib/openzeppelin-contracts/contracts/utils/cryptography/EIP712.sol";
 import {AccessControl} from "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
 import {OpenmeshENSReverseClaimable} from "../lib/openmesh-admin/src/OpenmeshENSReverseClaimable.sol";
@@ -20,8 +16,6 @@ import {IERC6372} from "../lib/openzeppelin-contracts/contracts/interfaces/IERC6
 import {IVerifiedContributor} from "./IVerifiedContributor.sol";
 
 contract VerifiedContributor is
-    ERC721,
-    ERC721Enumerable,
     EIP712,
     ERC721Votes,
     AccessControl,
@@ -40,32 +34,16 @@ contract VerifiedContributor is
     }
 
     /// @inheritdoc ERC721
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721, ERC721Enumerable, ERC721Votes)
-        returns (address)
-    {
-        return super._update(to, tokenId, auth);
-    }
-
-    /// @inheritdoc ERC721
-    function _increaseBalance(address account, uint128 value)
-        internal
-        override(ERC721, ERC721Enumerable, ERC721Votes)
-    {
-        super._increaseBalance(account, value);
-    }
-
-    /// @inheritdoc ERC721
     function supportsInterface(bytes4 _interfaceId)
         public
         view
         virtual
-        override(ERC721, ERC721Enumerable, AccessControl)
+        override(ERC721, AccessControl)
         returns (bool)
     {
-        return _interfaceId == type(IVotes).interfaceId || _interfaceId == type(IERC5267).interfaceId
-            || _interfaceId == type(IERC6372).interfaceId || super.supportsInterface(_interfaceId);
+        return _interfaceId == type(IVerifiedContributor).interfaceId || _interfaceId == type(IVotes).interfaceId
+            || _interfaceId == type(IERC5267).interfaceId || _interfaceId == type(IERC6372).interfaceId
+            || ERC721.supportsInterface(_interfaceId) || AccessControl.supportsInterface(_interfaceId);
     }
 
     /// @inheritdoc IVerifiedContributor
@@ -84,7 +62,7 @@ contract VerifiedContributor is
     }
 
     /// @inheritdoc IERC721
-    function transferFrom(address, address, uint256) public pure override(ERC721, IERC721) {
+    function transferFrom(address, address, uint256) public pure override {
         revert NotTransferable();
     }
 
