@@ -26,10 +26,11 @@ export async function deploy(
     }
   }
 
-  const verifiedContributor = await deployVerifiedContributor(
-    deployer,
-    settings?.verifiedContributorSettings ?? {}
-  );
+  const verifiedContributor: VerifiedContributorDeployment =
+    await deployVerifiedContributor(
+      deployer,
+      settings?.verifiedContributorSettings ?? {}
+    );
 
   const deployment = {
     verifiedContributor: verifiedContributor,
