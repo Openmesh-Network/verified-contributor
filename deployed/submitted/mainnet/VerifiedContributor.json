@@ -1,7 +1,7 @@
 {
   "type": "deployment",
   "id": "VerifiedContributor",
-  "batch": "testnet",
+  "batch": "mainnet",
   "batchIndex": 0,
   "deploymentAddress": "0x5D69236b32dac44371d8CEA1f6bdC06427756Ac9",
   "constructorArgs": [],
@@ -11,10 +11,10 @@
   "gas": "2452028",
   "from": "0x6b221aA392146E31743E1beB5827e88284B09753",
   "transactionSettings": {
-    "chainId": 421614,
-    "nonce": "13",
-    "baseFee": "1500000000",
-    "priorityFee": "1500000000"
+    "chainId": 137,
+    "nonce": "14",
+    "baseFee": "75000000000",
+    "priorityFee": "30000000000"
   },
   "salt": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000OPENMESH",
   "artifact": {
@@ -855,7 +855,7 @@
   },
   "source": "/home/plopmenz/openmesh-smart-contracts/lib/verified-contributor",
   "submitted": {
-    "transactionHash": "0x8dfbf7b20a3825a01e819027c0a93f18df2877c5ed8f8b736d3a24bbeffb6d09",
-    "date": "2024-04-24T19:45:46.206Z"
+    "transactionHash": "0x67ce8598e4a7e02101c14be8d13b88e4d216f385fba7814ac40057a340238a95",
+    "date": "2024-05-20T16:09:41.462Z"
   }
 }
